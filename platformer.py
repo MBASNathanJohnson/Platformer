@@ -1,5 +1,5 @@
 """
-Platformer Game
+Super Warewhare Bros
 """
 import arcade
 
@@ -12,6 +12,11 @@ SCREEN_TITLE = "Super Warewhare Bros"
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
+
+# Movement speed of player, in pixels per frame
+PLAYER_MOVEMENT_SPEED = 5
+GRAVITY = 1
+PLAYER_JUMP_SPEED = 20
 
 
 class MyGame(arcade.Window):
@@ -33,7 +38,11 @@ class MyGame(arcade.Window):
         # Separate variable that holds the player sprite
         self.player_sprite = None
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        # Our physics engine
+        self.physics_engine = None
+
+        # Background image will be stored in this variable
+        self.background = None
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -49,6 +58,8 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 128
         self.player_list.append(self.player_sprite)
 
+        self.background = arcade.load_texture("images/auckland.jpg")
+
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
         for x in range(0, 1250, 64):
@@ -59,26 +70,59 @@ class MyGame(arcade.Window):
 
         # Put some crates on the ground
         # This shows using a coordinate list to place sprites
-        coordinate_list = [[512, 160],
-                           [500, 96],
-                           [900, 96]]
+        coordinate_list = [[512, 300],
+                           [256, 175],
+                           [768, 150]]
 
         for coordinate in coordinate_list:
             # Add a crate on the ground
-            wall = arcade.Sprite("images/CRATE.PNG", TILE_SCALING)
+            wall = arcade.Sprite("images/crate.png", TILE_SCALING)
             wall.position = coordinate
             self.wall_list.append(wall)
 
+        # Create the 'physics engine'
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                             self.wall_list,
+                                                             GRAVITY)
+
     def on_draw(self):
         """ Render the screen. """
-
-        # Clear the screen to the background color
+        # Clear the screen
         arcade.start_render()
 
+        # Draw the background texture
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
         # Draw our sprites
         self.wall_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed. """
+
+        if key == arcade.key.SPACE or key == arcade.key.W or key == arcade.key.UP:
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
+    def on_key_release(self, key, modifiers):
+        """Called when the user releases a key. """
+
+        if key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = 0
+
+    def on_update(self, delta_time):
+        """ Movement and game logic """
+
+        # Move the player with the physics engine
+        self.physics_engine.update()
 
 
 def main():
