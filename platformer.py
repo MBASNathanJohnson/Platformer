@@ -18,6 +18,13 @@ PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
+# How many pixels to keep as a minimum margin between the character
+# and the edge of the screen.
+LEFT_VIEWPORT_MARGIN = 250
+RIGHT_VIEWPORT_MARGIN = 250
+BOTTOM_VIEWPORT_MARGIN = 50
+TOP_VIEWPORT_MARGIN = 10
+
 
 class MyGame(arcade.Window):
     """
@@ -34,6 +41,7 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.wall_list = None
         self.player_list = None
+        self.warp_list = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -41,8 +49,11 @@ class MyGame(arcade.Window):
         # Our physics engine
         self.physics_engine = None
 
-        # Background image will be stored in this variable
-        self.background = None
+        # Used to keep track of our scrolling
+        self.view_bottom = 0
+        self.view_left = 0
+
+        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -50,6 +61,7 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
         self.coin_list = arcade.SpriteList(use_spatial_hash=True)
+        self.warp_list = arcade.SpriteList(use_spatial_hash=True)
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = "images/smoke.png"
@@ -57,8 +69,6 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 128
         self.player_list.append(self.player_sprite)
-
-        self.background = arcade.load_texture("images/auckland.jpg")
 
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
@@ -68,11 +78,24 @@ class MyGame(arcade.Window):
             wall.center_y = 32
             self.wall_list.append(wall)
 
+        for x in range(1250, 1500, 64):
+            wall = arcade.Sprite("images/quicksand.jpg", TILE_SCALING)
+            wall.center_x = x
+            wall.center_y = 32
+            self.warp_list.append(wall)
+
+        for x in range(1500, 2000, 64):
+            wall = arcade.Sprite("images/grass.jpg", TILE_SCALING)
+            wall.center_x = x
+            wall.center_y = 32
+            self.wall_list.append(wall)
+
         # Put some crates on the ground
         # This shows using a coordinate list to place sprites
         coordinate_list = [[512, 300],
                            [256, 175],
-                           [768, 150]]
+                           [768, 150],
+                           [1024, 150]]
 
         for coordinate in coordinate_list:
             # Add a crate on the ground
@@ -85,19 +108,17 @@ class MyGame(arcade.Window):
                                                              self.wall_list,
                                                              GRAVITY)
 
+
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
         arcade.start_render()
 
-        # Draw the background texture
-        arcade.draw_lrwh_rectangle_textured(0, 0,
-                                            SCREEN_WIDTH, SCREEN_HEIGHT,
-                                            self.background)
         # Draw our sprites
         self.wall_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
+        self.warp_list.draw()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -123,6 +144,51 @@ class MyGame(arcade.Window):
 
         # Move the player with the physics engine
         self.physics_engine.update()
+
+        if self.player_sprite.center_y < -200:
+            self.setup()
+
+        # --- Manage Scrolling ---
+
+        # Track if we need to change the viewport
+
+        changed = False
+
+        # Scroll left
+        left_boundary = self.view_left + LEFT_VIEWPORT_MARGIN
+        if self.player_sprite.left < left_boundary:
+            self.view_left -= left_boundary - self.player_sprite.left
+            changed = True
+
+        # Scroll right
+        right_boundary = self.view_left + SCREEN_WIDTH - RIGHT_VIEWPORT_MARGIN
+        if self.player_sprite.right > right_boundary:
+            self.view_left += self.player_sprite.right - right_boundary
+            changed = True
+
+        # Scroll up
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
+        if self.player_sprite.top > top_boundary:
+            self.view_bottom += self.player_sprite.top - top_boundary
+            changed = True
+
+        # Scroll down
+        bottom_boundary = self.view_bottom + BOTTOM_VIEWPORT_MARGIN
+        if self.player_sprite.bottom < bottom_boundary:
+            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
+            changed = True
+
+        if changed:
+            # Only scroll to integers. Otherwise we end up with pixels that
+            # don't line up on the screen
+            self.view_bottom = int(self.view_bottom)
+            self.view_left = int(self.view_left)
+
+            # Do the scrolling
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
 
 
 def main():
