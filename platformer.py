@@ -1,24 +1,22 @@
 """
 Super Crypto Bros
 """
-from typing import Optional
-
 import arcade
 
 # Constants
-from arcade import Sound
-
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Super Crypto Bros Featuring MMCrypto and Davincij15"
+SCREEN_TITLE = "Super Crypto Bros: Featuring MMCrypto and Davincij15"
 
 # Constants used to scale our sprites from their original size
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
+SPRITE_PIXEL_SIZE = 128
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
 # Movement speed of player, in pixels per frame
-PLAYER_MOVEMENT_SPEED = 5
+PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
@@ -26,15 +24,14 @@ PLAYER_JUMP_SPEED = 20
 # and the edge of the screen.
 LEFT_VIEWPORT_MARGIN = 250
 RIGHT_VIEWPORT_MARGIN = 250
-BOTTOM_VIEWPORT_MARGIN = 50
-TOP_VIEWPORT_MARGIN = 10
+BOTTOM_VIEWPORT_MARGIN = 100
+TOP_VIEWPORT_MARGIN = 100
 
 
 class MyGame(arcade.Window):
     """
     Main application class.
     """
-    death_sound: Optional[Sound]
 
     def __init__(self):
 
@@ -46,10 +43,6 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.wall_list = None
         self.player_list = None
-        self.warp_list = None
-
-        # Keep track of the score
-        self.score = 0
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -61,74 +54,62 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
+        # Keep track of the score
+        self.score = 0
+
         # Load sounds
         self.collect_coin_sound = arcade.load_sound("coincollect.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
-        self.death_sound = arcade.load_sound("death.wav")
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        # Create the Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList(use_spatial_hash=True)
-        self.coin_list = arcade.SpriteList(use_spatial_hash=True)
-        self.warp_list = arcade.SpriteList(use_spatial_hash=True)
 
-        # Set up the player, specifically placing it at these coordinates.
-        # Big Smoke Character image_source = "images/smoke.png"
-        image_source = "images/chris.png"
-        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 128
-        self.player_list.append(self.player_sprite)
-
+        # Used to keep track of our scrolling
         self.view_bottom = 0
         self.view_left = 0
-
-        # Create the ground
-        # This shows using a loop to place multiple sprites horizontally
-        for x in range(0, 1250, 64):
-            wall = arcade.Sprite("images/grass.jpg", TILE_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.wall_list.append(wall)
-
-        for x in range(1250, 1500, 64):
-            wall = arcade.Sprite("images/quicksand.jpg", TILE_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.warp_list.append(wall)
-
-        for x in range(1500, 2000, 64):
-            wall = arcade.Sprite("images/grass.jpg", TILE_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.wall_list.append(wall)
-
-        # Put some crates on the ground
-        # This shows using a coordinate list to place sprites
-        coordinate_list = [[512, 300],
-                           [256, 175],
-                           [768, 150],
-                           [1024, 150]]
 
         # Keep track of the score
         self.score = 0
 
-        for coordinate in coordinate_list:
-            # Add a crate on the ground
-            wall = arcade.Sprite("images/crate.png", TILE_SCALING)
-            wall.position = coordinate
-            self.wall_list.append(wall)
+        # Create the Sprite lists
+        self.player_list = arcade.SpriteList()
+        self.wall_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
 
-        # Use a loop to place some coins for our character to pick up
-        for x in range(200, 1250, 256):
-            coin = arcade.Sprite("images/bitcoin.png", COIN_SCALING)
-            coin.center_x = x
-            coin.center_y = 96
-            self.coin_list.append(coin)
+        # Set up the player, specifically placing it at these coordinates.
+        image_source = "images/chris.png"
+        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
+        self.player_sprite.center_x = 128
+        self.player_sprite.center_y = 128
+        self.player_list.append(self.player_sprite)
+
+        # --- Load in a map from the tiled editor ---
+
+        # Name of map file to load
+        map_name = "map.tmx"
+        # Name of the layer in the file that has our platforms/walls
+        platforms_layer_name = 'Platforms'
+        # Name of the layer that has items for pick-up
+        coins_layer_name = 'Coins'
+
+        # Read in the tiled map
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        # -- Platforms
+        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
+                                                      layer_name=platforms_layer_name,
+                                                      scaling=TILE_SCALING,
+                                                      use_spatial_hash=True)
+
+        # -- Coins
+        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
+
+        # --- Other stuff
+        # Set the background color
+        if my_map.background_color:
+            arcade.set_background_color(my_map.background_color)
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -138,15 +119,13 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
 
-        # Clear the screen
+        # Clear the screen to the background color
         arcade.start_render()
 
         # Draw our sprites
         self.wall_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
-        self.warp_list.draw()
-
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
@@ -156,7 +135,7 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == key == arcade.key.W or key == arcade.key.UP:
+        if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 arcade.play_sound(self.jump_sound)
@@ -176,6 +155,10 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
+        # Kill the player if he falls lower than the map
+        if self.player_sprite.center_y > 5:
+            self.setup()
+
         # Move the player with the physics engine
         self.physics_engine.update()
 
@@ -191,10 +174,6 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.collect_coin_sound)
             # Add one to the score
             self.score += 1
-
-        if self.player_sprite.center_y < -200:
-            self.setup()
-            arcade.play_sound(self.death_sound)
 
         # --- Manage Scrolling ---
 
