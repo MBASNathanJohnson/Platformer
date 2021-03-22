@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#005179" nextlayerid="6" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="128" tileheight="128" tilecount="5" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../images/grass.jpg"/>
+  </tile>
+  <tile id="2">
+   <image width="128" height="128" source="../images/crate.png"/>
+  </tile>
+  <tile id="4">
+   <image width="128" height="128" source="../images/dirt.png"/>
+  </tile>
+  <tile id="5">
+   <image width="128" height="128" source="../images/bitcoin.png"/>
+  </tile>
+  <tile id="6">
+   <image width="128" height="128" source="../images/stone.png"/>
+  </tile>
+ </tileset>
+ <layer id="1" name="Platforms" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt1jsKgDAURUFFxP3vWAWDvxgTjFVm4HZW74DadQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQExfacSV3Gh9Zlw2VZgmd+G+Yakb1WwRxu7aIqdJzRYt9hi2XT21yGnyRes9Yt5a/NlEj7PcFn80aeF9VfqPWdLi2CTM9yNtBo5DA6E=
+  </data>
+ </layer>
+ <layer id="2" name="Coins" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt1qEBADAIA8Eo9h8ZX19A3C2Ql0kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPiptgMAAA6rzP+ld3OjAbitAYkHACs=
+  </data>
+ </layer>
+ <layer id="4" name="Foreground" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt0bEJAAAIBLHv3H9jG0ewUEjgJrgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA01cYMft/jBJw1OewAr
+  </data>
+ </layer>
+ <layer id="5" name="Background" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
+  </data>
+ </layer>
+</map>
