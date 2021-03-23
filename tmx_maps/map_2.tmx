@@ -20,22 +20,22 @@
  </tileset>
  <layer id="1" name="Platforms" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2EEOgjAQQFGMMd7/xsYFEQlgh06hhveS2VrppyoOAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANCj+2SA7fPgrAA9uRUO7b33+VE4LZro/BFp0aLJuD77WmQ2ma5/dTUtMprM17+yjBY1TZbWv6rMFtMmkVl6jStq0SJrzhC9jzKfAXpukdUjskfjfjwTJtqk9xYZPebXuLVHmS3G2fs+e50aa9e41SSzRWmPf2lR0mPtP+Zf19jq2X/v+chydo8lpfdbiyZ6fIue/cwma9/pkd/3Ndd+xOdVxjNMZI3s748j9ujIeQEd2gx2
+   eJzt2tsKgzAQQEFL6f//chEppVTjLdnEOAP7LntQgzgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHYog17vy5MK+K13VHqRZ6xFproUecLS30iLG1hR7l7WmhR1l7W+hRzpEWepRxpoUeeR1t4f7I72wLPfLJ0UKPPMYW4x71iDf3PfbzHtYjVq5nkh7nRbTQY5uoFnqsi2yhR1p0Cz2W1Wihx7xaLfT4V7OFHr9qt9Djq4UWekxaaaFHWy3u3qO1Fr31SP0TOze1d99zj1b3e8cevbTooUdPLa7eo7cWV+7RY4ur9ui1xZV6tH5Ozdljy1m9tjdK9gxO
   </data>
  </layer>
  <layer id="2" name="Coins" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2TEKADAIBDAn///krqVQ6KRIE7jZ20SMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAv+QWAGAuuxwAAIBJ3LEAAHcdP/xzZlWHfAzQbwGcawB/
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
   </data>
  </layer>
  <layer id="4" name="Foreground" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt0bEJAAAIBLHv3H9jG0ewUEjgJrgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA01cYMft/jBJw1OewAr
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
   </data>
  </layer>
  <layer id="5" name="Background" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt0bEJAEAIwEAtfv+VdQG/FIQ7yASJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCi7N4Qu34v/IB7CsjrAEQ=
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
   </data>
  </layer>
 </map>

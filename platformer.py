@@ -71,8 +71,10 @@ class MyGame(arcade.Window):
 
         # Load sounds
         self.collect_coin_sound = arcade.load_sound("coincollect.wav")
-        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        self.jump_sound = arcade.load_sound("jump.wav")
         self.game_over = arcade.load_sound("death.wav")
+        self.reverse = arcade.load_sound("reverse.wav")
+        self.forward = arcade.load_sound("vroom.wav")
 
     def setup(self, level):
         """ Set up the game here. Call this function to restart the game. """
@@ -92,7 +94,7 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        image_source = "images/chris.png"
+        image_source = "images/toyota.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
@@ -183,8 +185,10 @@ class MyGame(arcade.Window):
                 arcade.play_sound(self.jump_sound)
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+            arcade.play_sound(self.reverse)
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+            arcade.play_sound(self.forward)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
