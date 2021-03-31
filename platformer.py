@@ -1,12 +1,13 @@
 """
-Super Crypto Bros
+Platformer
+Jumping(R) by Mitchell
 """
 import arcade
 
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Super Crypto Bros: Featuring MMCrypto and Davincij15"
+SCREEN_TITLE = "Xtreme Warewhare Pursuit: Escape from Mount Eden"
 
 # Constants used to scale our sprites from their original size
 CHARACTER_SCALING = 1
@@ -16,9 +17,9 @@ SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
 # Movement speed of player, in pixels per frame
-PLAYER_MOVEMENT_SPEED = 10
+PLAYER_MOVEMENT_SPEED = 20
 GRAVITY = 1
-PLAYER_JUMP_SPEED = 20
+PLAYER_JUMP_SPEED = 30
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -28,7 +29,7 @@ BOTTOM_VIEWPORT_MARGIN = 150
 TOP_VIEWPORT_MARGIN = 100
 
 PLAYER_START_X = 64
-PLAYER_START_Y = 225
+PLAYER_START_Y = 250
 
 
 class MyGame(arcade.Window):
@@ -71,10 +72,7 @@ class MyGame(arcade.Window):
 
         # Load sounds
         self.collect_coin_sound = arcade.load_sound("coincollect.wav")
-        self.jump_sound = arcade.load_sound("jump.wav")
         self.game_over = arcade.load_sound("death.wav")
-        self.reverse = arcade.load_sound("reverse.wav")
-        self.forward = arcade.load_sound("vroom.wav")
 
     def setup(self, level):
         """ Set up the game here. Call this function to restart the game. """
@@ -94,7 +92,9 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        image_source = "images/toyota.png"
+        #image_source = "images/yandare.png"
+        #image_source = "images/chris.png"
+        image_source = "images/player.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
@@ -182,13 +182,10 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
-                arcade.play_sound(self.jump_sound)
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-            arcade.play_sound(self.reverse)
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-            arcade.play_sound(self.forward)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -216,6 +213,7 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.collect_coin_sound)
             # Add one to the score
             self.score += 1
+            print (self.score)
 
         # Track if we need to change the viewport
         changed_viewport = False
