@@ -92,9 +92,9 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        #image_source = "images/yandare.png"
+        image_source = "images/yandare.png"
         #image_source = "images/chris.png"
-        image_source = "images/player.png"
+        #image_source = "images/player.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
